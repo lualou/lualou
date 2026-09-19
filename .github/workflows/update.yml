@@ -1,0 +1,47 @@
+name: _
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+
+  workflow_dispatch:
+
+  push:
+    paths:
+      - ".github/**"
+
+permissions:
+  contents: write
+
+env:
+  LUNE_VERSION: "0.10.5"
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+ 
+    steps:
+      - uses: actions/checkout@v7
+ 
+      - run: |
+          curl -fsSL -o "$RUNNER_TEMP/lune.zip" \
+            "https://github.com/lune-org/lune/releases/download/v$LUNE_VERSION/lune-$LUNE_VERSION-linux-x86_64.zip"
+          unzip -q "$RUNNER_TEMP/lune.zip" -d "$RUNNER_TEMP/lune"
+          echo "$RUNNER_TEMP/lune" >> "$GITHUB_PATH"
+ 
+      - run: lune run .github/readme/update.luau
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+ 
+      - run: |
+          if git diff --quiet README.md; then
+            echo "README unchanged"
+            exit 0
+          fi
+ 
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+ 
+          git add README.md
+          git commit -m "chore: ..."
+          git push
