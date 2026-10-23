@@ -23,8 +23,8 @@ local Table = {
     },
 
     File = {
-        Version = "a5ccc01c88b94745bfb26506298868cc1139f027",
-        LastUpdated = "Thu, 22 Oct 2026 02:40:49 GMT",
+        Version = "27f56eb0b2756e20194c4550f7838ad57c1c697c",
+        LastUpdated = "Fri, 23 Oct 2026 02:44:48 GMT",
     },
 }
 
